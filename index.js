@@ -68,9 +68,9 @@ function processV1Request (request, response) {
     'input.unknown': () => {
       // Use the Actions on Google lib to respond to Google requests; for other requests use JSON
       if (requestSource === googleAssistantRequest) {
-        sendGoogleResponse('Harami'); // Send simple response to user
+        sendGoogleResponse('Response in assistant'); // Send simple response to user
       } else {
-        sendResponse('eh Mardarchod?'); // Send simple response to user
+        sendResponse('Response in Tesing'); // Send simple response to user
       }
     },
     
