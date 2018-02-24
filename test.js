@@ -2,6 +2,7 @@
 
 const ACTION_PRICE = 'price';
 
+const axios = require("axios");
 const http = require('https');
 
 const functions = require('firebase-functions'); // Cloud Functions for Firebase library
@@ -16,32 +17,23 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((req, resp) =>
     const googleAssistantRequest = 'google'; // Constant to identify Google Assistant requests
     
     function priceHandler (app) {
-        console.log("Testing Testing");
-        var options = {
-            host: 'maps.googleapis.com', 
-            path:'/maps/api/geocode/json?address=Florence'
-        };
-        var data = '';
-        var re = http.request(options, function (response) {
-                response.on('data', function (chunk) {
-                data += chunk;
-            });
-            response.on('end', function () {
-                //console.log("json is: " + data);
-                console.log("data is: " + data);
-                data = JSON.parse(data);
-                console.log("parsed data is: " + data);
-                let json = JSON.stringify(data);
-                console.log("json is: " + json);
-                //console.log("The parsed data is: "+ json.result[0].formatted_address);
-                const msg = json.results[0].formatted_address;
-                app.tell(msg);
-            });
-        });
-        re.on('error', function (e) {
-            console.log(e.message);
-        });
-        re.end();
+        
+        const url = "https://maps.googleapis.com/maps/api/geocode/json?address=Florence";
+        axios
+          .get(url)
+          .then(response => {
+            console.log(
+              `City: ${response.data.results[0].formatted_address} -`,
+              `Latitude: ${response.data.results[0].geometry.location.lat} -`,
+              `Longitude: ${response.data.results[0].geometry.location.lng}`
+            );
+            var msg = response.data.results[0].formatted_address;
+            console.log("message: " + msg);
+            app.tell(msg);
+          })
+          .catch(error => {
+            console.log(error);
+          });
   }
   
   const actionMap = new Map();
